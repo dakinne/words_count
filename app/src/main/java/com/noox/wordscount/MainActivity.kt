@@ -2,6 +2,8 @@ package com.noox.wordscount
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noox.wordscount.databinding.ActivityMainBinding
 import initBinding
@@ -25,8 +27,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         val adapter = WordsAdapter()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.addItemDecoration(LineDivider(this))
-        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.addItemDecoration(DividerItemDecoration(this, VERTICAL))
         binding.recyclerView.adapter = adapter
 
         launch {
