@@ -1,4 +1,4 @@
-package com.noox.wordscount
+package com.noox.wordscount.words.ui
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,9 +33,10 @@ class WordsAdapter : RecyclerView.Adapter<WordViewHolder>() {
         Log.i("noox", "item inserted in ${word.position}")
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = WordViewHolder(
-        binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        WordViewHolder(
+            binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         holder.bind(wordsList[position])

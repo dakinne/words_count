@@ -1,7 +1,8 @@
-package com.noox.wordscount
+package com.noox.wordscount.words.ui
 
 import androidx.recyclerview.widget.RecyclerView
 import com.noox.wordscount.databinding.ItemListBinding
+import com.noox.wordscount.words.ui.Word
 
 class WordViewHolder(
     private val binding: ItemListBinding

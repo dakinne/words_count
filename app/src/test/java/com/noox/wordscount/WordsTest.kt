@@ -1,5 +1,6 @@
 package com.noox.wordscount
 
+import com.noox.wordscount.words.ui.Words
 import org.junit.Test
 
 import org.junit.Assert.*

@@ -1,4 +1,4 @@
-package com.noox.wordscount
+package com.noox.wordscount.words.ui
 
 data class Word(val text: String, val position: Int) {
 

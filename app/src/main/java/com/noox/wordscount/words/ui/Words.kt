@@ -1,4 +1,4 @@
-package com.noox.wordscount
+package com.noox.wordscount.words.ui
 
 import java.util.*
 
