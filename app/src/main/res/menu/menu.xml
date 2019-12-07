@@ -2,16 +2,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_sort_alphabetical"
-        android:icon="@drawable/ic_sort_alphabetical"
-        app:showAsAction="never"
-        android:title="@string/sort_alphabetical" />
+        android:id="@+id/menu_file"
+        android:icon="@drawable/ic_file_document"
+        app:showAsAction="always"
+        android:title="@string/file" />
 
     <item
         android:id="@+id/menu_sort_position"
         android:icon="@drawable/ic_sort_descending"
         app:showAsAction="never"
         android:title="@string/sort_numeric" />
+
+    <item
+        android:id="@+id/menu_sort_alphabetical"
+        android:icon="@drawable/ic_sort_alphabetical"
+        app:showAsAction="never"
+        android:title="@string/sort_alphabetical" />
 
     <item
         android:id="@+id/menu_sort_appearances"
