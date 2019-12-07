@@ -2,6 +2,7 @@ package com.noox.wordscount.words.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.View.VISIBLE
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
@@ -32,21 +33,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         binding.recyclerView.adapter = adapter
 
         launch {
-            words()
-                .onCompletion {
-                    binding.fab.visibility = VISIBLE
-                }.collect {
+            words().collect {
                 adapter.add(it)
             }
         }
-
-        binding.fab.setOnClickListener { showBottomSheet() }
     }
 
-    private fun showBottomSheet() {
-        WordsBottomSheetFragment().let {
-            it.show(supportFragmentManager, it.tag)
-        }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
     }
 
     private fun words() = flow {

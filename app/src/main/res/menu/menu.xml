@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_sort_alphabetical"
+        android:icon="@drawable/ic_sort_alphabetical"
+        app:showAsAction="never"
+        android:title="@string/sort_alphabetical" />
+
+    <item
+        android:id="@+id/sort_numeric"
+        android:icon="@drawable/ic_sort_descending"
+        app:showAsAction="never"
+        android:title="@string/sort_numeric" />
+
+    <item
+        android:id="@+id/sort_descending"
+        android:icon="@drawable/ic_sort_numeric"
+        app:showAsAction="never"
+        android:title="@string/sort_descending" />
+</menu>

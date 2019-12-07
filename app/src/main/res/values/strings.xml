@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">words count</string>
+    <string name="empty"> </string>
 
     <string name="order">Ordenar</string>
     <string name="sort_alphabetical">Orden alfabético</string>
