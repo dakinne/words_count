@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,16 +24,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.BufferedReader
 
-
-// TODO: Ahora usamos coroutinas en la Activity, luego se usaran desde el ViewModel y la
-// Activity observara la palabras
-class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
+class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
     private val adapter = WordsAdapter()
 
     private lateinit var binding: ActivityMainBinding
+    private val viewModel by viewModel<WordsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,11 +42,21 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         binding.recyclerView.addItemDecoration(DividerItemDecoration(this, VERTICAL))
         binding.recyclerView.adapter = adapter
 
+        viewModel.words.observe(this, Observer { render(it) })
+
         launch {
             words().collect {
                 adapter.add(it)
             }
         }
+    }
+
+    private fun render(words: Words) {
+        Log.i("NOOX", "render INI")
+        words.items.forEach {
+            Log.i("NOOX", "$it")
+        }
+        Log.i("NOOX", "render FIN")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -119,7 +129,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
         }
 
         data?.data?.let {
-            importFile(it)
+            viewModel.loadWordsFrom(it)
         }
     }
 
