@@ -4,6 +4,6 @@
 
     <string name="order">Ordenar</string>
     <string name="sort_alphabetical">Orden alfabético</string>
-    <string name="sort_descending">Número de repeticiones</string>
+    <string name="sort_descending">Número de apariciones</string>
     <string name="sort_numeric">Orden de inserción</string>
 </resources>

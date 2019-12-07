@@ -1,8 +1,11 @@
 package com.noox.wordscount.words.ui
 
+import com.noox.wordscount.words.ui.Words.SortType.*
 import java.util.*
 
 class Words {
+
+    enum class SortType { Alphabetical, Position, Appearance }
 
     private val wordsList = mutableListOf<Word>()
     private val wordsMap = mutableMapOf<String, Word>()
@@ -19,6 +22,14 @@ class Words {
         val word = Word(text, wordsList.size)
         wordsList.add(word)
         wordsMap[lowerCaseText] = word
+    }
+
+    fun sortBy(sortType: SortType) {
+        when (sortType) {
+            Alphabetical -> wordsList.sortBy { it.text }
+            Position -> wordsList.sortBy { it.position }
+            Appearance -> wordsList.sortByDescending { it.timesItAppears }
+        }
     }
 
 }

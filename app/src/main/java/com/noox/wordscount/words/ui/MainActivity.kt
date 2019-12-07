@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noox.wordscount.R
 import com.noox.wordscount.databinding.ActivityMainBinding
+import com.noox.wordscount.words.ui.WordsAdapter.SortType.*
 import initBinding
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -19,14 +20,13 @@ import kotlinx.coroutines.flow.flow
 // Activity observara la palabras
 class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
+    private val adapter = WordsAdapter()
+
     private lateinit var binding: ActivityMainBinding
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = initBinding(R.layout.activity_main)
-
-        val adapter = WordsAdapter()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.addItemDecoration(DividerItemDecoration(this, VERTICAL))
@@ -46,15 +46,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_sort_alphabetical -> {
-            Toast.makeText(this, "sort alphabetical", Toast.LENGTH_SHORT).show()
+            adapter.sortBy(Alphabetical)
             true
         }
         R.id.menu_sort_position -> {
-            Toast.makeText(this, "sort escending", Toast.LENGTH_SHORT).show()
+            adapter.sortBy(Position)
             true
         }
         R.id.menu_sort_appearances -> {
-            Toast.makeText(this, "sort numerical", Toast.LENGTH_SHORT).show()
+            adapter.sortBy(Appearance)
             true
         }
         else -> super.onOptionsItemSelected(item)
