@@ -8,13 +8,13 @@
         android:title="@string/sort_alphabetical" />
 
     <item
-        android:id="@+id/sort_numeric"
+        android:id="@+id/menu_sort_position"
         android:icon="@drawable/ic_sort_descending"
         app:showAsAction="never"
         android:title="@string/sort_numeric" />
 
     <item
-        android:id="@+id/sort_descending"
+        android:id="@+id/menu_sort_appearances"
         android:icon="@drawable/ic_sort_numeric"
         app:showAsAction="never"
         android:title="@string/sort_descending" />
