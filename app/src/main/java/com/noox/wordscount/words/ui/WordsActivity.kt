@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noox.wordscount.R
+import com.noox.wordscount.common.extensions.onAfterChange
 import com.noox.wordscount.databinding.ActivityMainBinding
 import com.noox.wordscount.words.ui.WordsList.SortType
 import initBinding
@@ -34,11 +35,16 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
         super.onCreate(savedInstanceState)
         binding = initBinding(R.layout.activity_main)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.addItemDecoration(DividerItemDecoration(this, VERTICAL))
 
         viewModel.words.observe(this, Observer { show(it) })
         viewModel.showFilter.observe(this, Observer { showFilter(it) })
+
+        binding.filter.onAfterChange { viewModel.onFilterChange() }
     }
 
     private fun show(words: WordsList) {

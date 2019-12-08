@@ -26,6 +26,8 @@ class WordsViewModel(
     val showFilter: LiveData<Boolean> get() = _showFilter
     private val _showFilter = MutableLiveData<Boolean>(false)
 
+    var filter = MutableLiveData<String>()
+
     @ExperimentalCoroutinesApi
     fun loadWordsFrom(uri: Uri) {
         clear()
@@ -49,11 +51,17 @@ class WordsViewModel(
 
     private fun clear() {
         wordsList.clear()
+        filter.value = ""
         _words.value = wordsList
     }
 
     fun sortBy(sortType: SortType) {
         wordsList.sortBy(sortType)
+        _words.value = wordsList
+    }
+
+    fun onFilterChange() {
+        wordsList.filter = filter.value
         _words.value = wordsList
     }
 

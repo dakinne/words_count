@@ -28,6 +28,7 @@ class WordsAdapter(val words: WordsList) : RecyclerView.Adapter<WordViewHolder>(
             is ActionType.Update ->  notifyItemChanged(action.word.position)
             is ActionType.Clear -> notifyDataSetChanged()
             is ActionType.Sort -> notifyDataSetChanged()
+            is ActionType.Filter -> notifyDataSetChanged()
         }
     }
 

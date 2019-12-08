@@ -9,7 +9,17 @@ class WordsList {
     private val wordsMap = mutableMapOf<String, Word>()
 
     var lastAction: ActionType = ActionType.None
-    val items = wordsList
+    val items: List<Word>
+            get() {
+                val filter = filter ?: return wordsList
+                return wordsList.filter { it.text.startsWith(filter) }
+            }
+
+    var filter: String? = null
+        set(value) {
+            field = if (value.isNullOrBlank()) null else value
+            lastAction = ActionType.Filter
+        }
 
     fun add(text: String) {
         val lowerCaseText = text.toLowerCase(Locale.ROOT)
@@ -46,6 +56,7 @@ class WordsList {
     fun clear() {
         wordsList.clear()
         wordsMap.clear()
+        filter = null
         lastAction = ActionType.Clear
     }
 
@@ -57,5 +68,6 @@ class WordsList {
         data class Update(val word: Word): ActionType()
         object Clear: ActionType()
         object Sort: ActionType()
+        object Filter: ActionType()
     }
 }

@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".words.ui.WordsActivity">
 
+    <data>
+        <variable name="viewModel" type="com.noox.wordscount.words.ui.WordsViewModel"/>
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,6 +26,7 @@
             android:maxLines="1"
             android:padding="12dp"
             android:textAppearance="@style/TextAppearance.Search"
+            android:text="@={viewModel.filter}"
             android:visibility="invisible"/>
 
         <androidx.recyclerview.widget.RecyclerView
