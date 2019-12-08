@@ -9,6 +9,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -16,12 +18,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noox.wordscount.R
+import com.noox.wordscount.common.event.UIEventObserver
+import com.noox.wordscount.common.extensions.initBinding
 import com.noox.wordscount.common.extensions.onAfterChange
 import com.noox.wordscount.databinding.ActivityMainBinding
 import com.noox.wordscount.words.ui.WordsList.SortType
-import initBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
@@ -43,8 +47,13 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
 
         viewModel.words.observe(this, Observer { show(it) })
         viewModel.showFilter.observe(this, Observer { showFilter(it) })
+        viewModel.errorMessage.observe(this, UIEventObserver { showError(it) })
 
         binding.filter.onAfterChange { viewModel.onFilterChange() }
+    }
+
+    private fun showError(@StringRes resId: Int) {
+        Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show()
     }
 
     private fun show(words: WordsList) {
@@ -127,6 +136,7 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
         startActivityForResult(Intent.createChooser(intent, "Selecciona un fichero de texto"), RC_FILE)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

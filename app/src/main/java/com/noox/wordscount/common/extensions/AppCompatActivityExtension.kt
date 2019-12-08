@@ -1,3 +1,5 @@
+package com.noox.wordscount.common.extensions
+
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil

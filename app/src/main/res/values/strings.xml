@@ -7,4 +7,6 @@
     <string name="sort_alphabetical">Ordenar alfabéticamente</string>
     <string name="sort_descending">Ordenar por número de apariciones</string>
     <string name="sort_numeric">Ordenar por posición</string>
+
+    <string name="error_generic_message">Se ha producido un error</string>
 </resources>

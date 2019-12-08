@@ -1,12 +1,13 @@
 package com.noox.wordscount.words.ui
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.noox.wordscount.R
 import com.noox.wordscount.common.Result
+import com.noox.wordscount.common.event.UIEvent
 import com.noox.wordscount.words.domain.usecase.LoadWords
 import com.noox.wordscount.words.ui.WordsList.SortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,6 +27,9 @@ class WordsViewModel(
     val showFilter: LiveData<Boolean> get() = _showFilter
     private val _showFilter = MutableLiveData<Boolean>(false)
 
+    val errorMessage: LiveData<UIEvent<Int>> get() = _errorMessage
+    private val _errorMessage = MutableLiveData<UIEvent<Int>>()
+
     var filter = MutableLiveData<String>()
 
     @ExperimentalCoroutinesApi
@@ -37,8 +41,8 @@ class WordsViewModel(
                 .onCompletion { showFilter() }
                 .collect { result ->
                 when (result) {
-                    is Result.Success ->  { add(result.data) }
-                    is Result.Error -> Log.e("NOOX", "ERROR: ${result.type.name}")
+                    is Result.Success -> add(result.data)
+                    is Result.Error ->  showError()
                 }
             }
         }
@@ -71,5 +75,9 @@ class WordsViewModel(
 
     private fun showFilter() {
         _showFilter.value = true
+    }
+
+    private fun showError() {
+        _errorMessage.value = UIEvent(R.string.error_generic_message)
     }
 }
