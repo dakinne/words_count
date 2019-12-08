@@ -7,6 +7,8 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -35,15 +37,23 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.addItemDecoration(DividerItemDecoration(this, VERTICAL))
 
-        viewModel.words.observe(this, Observer { render(it) })
+        viewModel.words.observe(this, Observer { show(it) })
+        viewModel.showFilter.observe(this, Observer { showFilter(it) })
     }
 
-    private fun render(words: WordsList) {
+    private fun show(words: WordsList) {
         if (adapter == null) {
             adapter = WordsAdapter((words))
             binding.recyclerView.adapter = adapter
         } else {
             adapter?.update(words)
+        }
+    }
+
+    private fun showFilter(show: Boolean) {
+        when (show) {
+            true -> binding.filter.visibility = VISIBLE
+            false -> binding.filter.visibility = INVISIBLE
         }
     }
 
