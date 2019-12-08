@@ -2,55 +2,12 @@ package com.noox.wordscount.words.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.noox.wordscount.databinding.ItemListBinding
-import com.noox.wordscount.words.ui.WordsAdapter.SortType.*
-import java.util.*
 
-
-// TODO: Se podria mejorar haciendolo de esta manera
-//class FeedAdapter(
-//    private val viewBinders: Map<FeedItemClass, FeedItemBinder>
-//) : ListAdapter<Any, RecyclerView.ViewHolder>(FeedDiffCallback(viewBinders))
-
-class WordsAdapter : RecyclerView.Adapter<WordViewHolder>() {
-
-    enum class SortType { Alphabetical, Position, Appearance }
-
-    private val wordsList = mutableListOf<Word>()
-    private val wordsMap = mutableMapOf<String, Word>()
-
-    fun add(text: String) {
-        val lowerCaseText = text.toLowerCase(Locale.ROOT)
-        val word = wordsMap[lowerCaseText]
-
-        if (word == null) {
-            addNewWord(text, lowerCaseText)
-        } else {
-            updateWord(word)
-        }
-    }
-
-    private fun addNewWord(text: String, lowerCaseText: String) {
-        val word = Word(text, wordsList.size)
-        wordsList.add(word)
-        wordsMap[lowerCaseText] = word
-        notifyItemInserted(word.position)
-    }
-
-    private fun updateWord(word: Word) {
-        word.increaseTimesItAppears()
-        notifyItemChanged(word.position)
-    }
-
-    fun sortBy(type: SortType) {
-        when (type) {
-            Alphabetical -> wordsList.sortBy { it.text }
-            Position -> wordsList.sortBy { it.position }
-            Appearance -> wordsList.sortByDescending { it.timesItAppears }
-        }
-        notifyDataSetChanged()
-    }
+class WordsAdapter : ListAdapter<Word, WordViewHolder>(WordsDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         WordViewHolder(
@@ -58,11 +15,26 @@ class WordsAdapter : RecyclerView.Adapter<WordViewHolder>() {
         )
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-        holder.bind(wordsList[position])
+        holder.bind(getItem(position))
+    }
+}
+
+class WordViewHolder(
+    private val binding: ItemListBinding
+) : RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(word: Word) {
+        binding.word.text = word.text
+        binding.count.text = word.timesItAppears.toString()
     }
 
-    override fun getItemCount() : Int {
-        return wordsList.size
-    }
+}
 
+object WordsDiff: DiffUtil.ItemCallback<Word>() {
+    override fun areItemsTheSame(oldItem: Word, newItem: Word): Boolean {
+        return oldItem.text == newItem.text
+    }
+    override fun areContentsTheSame(oldItem: Word, newItem: Word): Boolean {
+        return oldItem == newItem
+    }
 }

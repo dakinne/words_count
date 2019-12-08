@@ -4,11 +4,10 @@ import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -17,19 +16,12 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noox.wordscount.R
 import com.noox.wordscount.databinding.ActivityMainBinding
-import com.noox.wordscount.words.ui.WordsAdapter.SortType.*
 import initBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.BufferedReader
 
 class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
-
-    private val adapter = WordsAdapter()
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel by viewModel<WordsViewModel>()
@@ -40,23 +32,13 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.addItemDecoration(DividerItemDecoration(this, VERTICAL))
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = WordsAdapter()
 
         viewModel.words.observe(this, Observer { render(it) })
-
-        launch {
-            words().collect {
-                adapter.add(it)
-            }
-        }
     }
 
-    private fun render(words: Words) {
-        Log.i("NOOX", "render INI")
-        words.items.forEach {
-            Log.i("NOOX", "$it")
-        }
-        Log.i("NOOX", "render FIN")
+    private fun render(words: List<Word>) {
+        (binding.recyclerView.adapter as WordsAdapter).submitList(words)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -66,15 +48,15 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_sort_alphabetical -> {
-            adapter.sortBy(Alphabetical)
+            Toast.makeText(this, "order alphabetical", Toast.LENGTH_SHORT).show()
             true
         }
         R.id.menu_sort_position -> {
-            adapter.sortBy(Position)
+            Toast.makeText(this, "order by positio", Toast.LENGTH_SHORT).show()
             true
         }
         R.id.menu_sort_appearances -> {
-            adapter.sortBy(Appearance)
+            Toast.makeText(this, "order by appearance", Toast.LENGTH_SHORT).show()
             true
         }
         R.id.menu_file -> {
@@ -130,35 +112,6 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
 
         data?.data?.let {
             viewModel.loadWordsFrom(it)
-        }
-    }
-
-    private fun importFile(uri: Uri) {
-
-        val byWord = "\\s+".toRegex()
-
-        val inputStream = contentResolver.openInputStream(uri) ?: return
-        val reader = BufferedReader(inputStream.reader())
-
-        launch {
-            flow {
-                reader.useLines { lines ->
-                    lines.forEach { line ->
-                        line.split(byWord).forEach { word ->
-                            emit(word)
-                        }
-                    }
-                }
-            }.collect {
-                Log.i("NOOX", "collect $it")
-            }
-        }
-    }
-
-    private fun words() = flow {
-        val words = arrayOf("Pedro", "Alicia", "Carlos", "alicia", "pedro", "Pedro", "Alicia", "Carlos", "alicia", "pedro", "Pedro", "Alicia", "Carlos", "alicia", "pedro")
-        words.forEach {
-            emit(it)
         }
     }
 
