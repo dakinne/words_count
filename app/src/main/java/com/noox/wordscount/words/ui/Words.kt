@@ -1,5 +1,7 @@
 package com.noox.wordscount.words.ui
 
+import com.noox.wordscount.words.domain.model.Word
+
 data class Words(val items: List<Word>, val lastAction: ActionType = ActionType.None)
 
 sealed class ActionType {

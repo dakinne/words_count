@@ -1,4 +1,4 @@
-package com.noox.wordscount.words.domain
+package com.noox.wordscount.words.domain.usecase
 
 import android.net.Uri
 import com.noox.wordscount.common.Result

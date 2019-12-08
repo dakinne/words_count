@@ -7,7 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.noox.wordscount.common.Result
-import com.noox.wordscount.words.domain.LoadWords
+import com.noox.wordscount.words.domain.usecase.LoadWords
+import com.noox.wordscount.words.domain.model.Word
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
@@ -63,7 +64,8 @@ class WordsViewModel(
     }
 
     private fun addNewWord(text: String, lowerCaseText: String) {
-        val word = Word(text, wordsList.size)
+        val word =
+            Word(text, wordsList.size)
         wordsList.add(word)
         wordsMap[lowerCaseText] = word
         _words.value = Words(wordsList, ActionType.Add(word))
