@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noox.wordscount.R
 import com.noox.wordscount.databinding.ActivityMainBinding
+import com.noox.wordscount.words.ui.WordsViewModel.SortType.*
 import initBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,19 +27,25 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
     private lateinit var binding: ActivityMainBinding
     private val viewModel by viewModel<WordsViewModel>()
 
+    private var adapter: WordsAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = initBinding(R.layout.activity_main)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.addItemDecoration(DividerItemDecoration(this, VERTICAL))
-        binding.recyclerView.adapter = WordsAdapter()
 
         viewModel.words.observe(this, Observer { render(it) })
     }
 
-    private fun render(words: List<Word>) {
-        (binding.recyclerView.adapter as WordsAdapter).submitList(words)
+    private fun render(words: Words) {
+        if (adapter == null) {
+            adapter = WordsAdapter((words))
+            binding.recyclerView.adapter = adapter
+        } else {
+            adapter?.update(words)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -48,15 +55,15 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_sort_alphabetical -> {
-            Toast.makeText(this, "order alphabetical", Toast.LENGTH_SHORT).show()
+            viewModel.sortBy(Alphabetical)
             true
         }
         R.id.menu_sort_position -> {
-            Toast.makeText(this, "order by positio", Toast.LENGTH_SHORT).show()
+            viewModel.sortBy(Position)
             true
         }
         R.id.menu_sort_appearances -> {
-            Toast.makeText(this, "order by appearance", Toast.LENGTH_SHORT).show()
+            viewModel.sortBy(Appearance)
             true
         }
         R.id.menu_file -> {

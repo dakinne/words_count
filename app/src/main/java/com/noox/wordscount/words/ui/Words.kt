@@ -1,35 +1,11 @@
 package com.noox.wordscount.words.ui
 
-import com.noox.wordscount.words.ui.Words.SortType.*
-import java.util.*
+data class Words(val items: List<Word>, val lastAction: ActionType = ActionType.None)
 
-class Words {
-
-    enum class SortType { Alphabetical, Position, Appearance }
-
-    private val wordsList = mutableListOf<Word>()
-    private val wordsMap = mutableMapOf<String, Word>()
-
-    val items : List<Word>
-        get() = wordsList
-
-    fun add(text: String) {
-        val lowerCaseText = text.toLowerCase(Locale.ROOT)
-        wordsMap[lowerCaseText]?.let {
-            it.increaseTimesItAppears()
-            return
-        }
-        val word = Word(text, wordsList.size)
-        wordsList.add(word)
-        wordsMap[lowerCaseText] = word
-    }
-
-    fun sortBy(sortType: SortType) {
-        when (sortType) {
-            Alphabetical -> wordsList.sortBy { it.text }
-            Position -> wordsList.sortBy { it.position }
-            Appearance -> wordsList.sortByDescending { it.timesItAppears }
-        }
-    }
-
+sealed class ActionType {
+    object None: ActionType()
+    data class Add(val word: Word): ActionType()
+    data class Update(val word: Word): ActionType()
+    object Clear: ActionType()
+    object Sort: ActionType()
 }

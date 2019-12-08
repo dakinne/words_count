@@ -16,13 +16,16 @@ class WordsViewModel(
     private val loadWords: LoadWords
 ) : ViewModel() {
 
+    enum class SortType { Alphabetical, Position, Appearance }
+
     private val wordsList = mutableListOf<Word>()
     private val wordsMap = mutableMapOf<String, Word>()
 
-    val words: LiveData<List<Word>> get() = _words
-    private val _words = MutableLiveData<List<Word>>(wordsList)
+    val words: LiveData<Words> get() = _words
+    private val _words = MutableLiveData<Words>(Words(wordsList))
 
     fun loadWordsFrom(uri: Uri) {
+        emptyWords()
         viewModelScope.launch {
             loadWords(uri).collect { result ->
                 when (result) {
@@ -31,6 +34,21 @@ class WordsViewModel(
                 }
             }
         }
+    }
+
+    fun sortBy(sortType: SortType) {
+        when (sortType) {
+            SortType.Alphabetical -> wordsList.sortBy { it.text }
+            SortType.Position -> wordsList.sortBy { it.position }
+            SortType.Appearance -> wordsList.sortByDescending { it.timesItAppears }
+        }
+        _words.value = Words(wordsList, ActionType.Sort)
+    }
+
+    private fun emptyWords() {
+        wordsList.clear()
+        wordsMap.clear()
+        _words.value = Words(wordsList, ActionType.Clear)
     }
 
     private fun add(text: String) {
@@ -48,11 +66,11 @@ class WordsViewModel(
         val word = Word(text, wordsList.size)
         wordsList.add(word)
         wordsMap[lowerCaseText] = word
-        _words.value = wordsList
+        _words.value = Words(wordsList, ActionType.Add(word))
     }
 
     private fun updateWord(word: Word) {
         word.increaseTimesItAppears()
-        _words.value = ArrayList<Word>(wordsList)
+        _words.value = Words(wordsList, ActionType.Update(word))
     }
 }

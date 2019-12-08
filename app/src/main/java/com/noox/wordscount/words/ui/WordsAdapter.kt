@@ -2,12 +2,12 @@ package com.noox.wordscount.words.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.noox.wordscount.databinding.ItemListBinding
 
-class WordsAdapter : ListAdapter<Word, WordViewHolder>(WordsDiff) {
+class WordsAdapter(val words: Words) : RecyclerView.Adapter<WordViewHolder>() {
+
+    private var items = words.items
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         WordViewHolder(
@@ -15,26 +15,19 @@ class WordsAdapter : ListAdapter<Word, WordViewHolder>(WordsDiff) {
         )
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
-}
-
-class WordViewHolder(
-    private val binding: ItemListBinding
-) : RecyclerView.ViewHolder(binding.root) {
-
-    fun bind(word: Word) {
-        binding.word.text = word.text
-        binding.count.text = word.timesItAppears.toString()
+        holder.bind(items[position])
     }
 
-}
+    override fun getItemCount() = items.size
 
-object WordsDiff: DiffUtil.ItemCallback<Word>() {
-    override fun areItemsTheSame(oldItem: Word, newItem: Word): Boolean {
-        return oldItem.text == newItem.text
+    fun update(words: Words) {
+        items = words.items
+        when (val action = words.lastAction) {
+            is ActionType.Add ->  notifyItemInserted(action.word.position)
+            is ActionType.Update ->  notifyItemChanged(action.word.position)
+            is ActionType.Clear -> notifyDataSetChanged()
+            is ActionType.Sort -> notifyDataSetChanged()
+        }
     }
-    override fun areContentsTheSame(oldItem: Word, newItem: Word): Boolean {
-        return oldItem == newItem
-    }
+
 }
