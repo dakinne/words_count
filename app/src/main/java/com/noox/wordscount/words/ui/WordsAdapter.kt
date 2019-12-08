@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.noox.wordscount.databinding.ItemListBinding
+import com.noox.wordscount.words.ui.Words.ActionType
 
 class WordsAdapter(val words: Words) : RecyclerView.Adapter<WordViewHolder>() {
 
