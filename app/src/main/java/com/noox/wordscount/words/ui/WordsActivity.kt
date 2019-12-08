@@ -7,7 +7,6 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noox.wordscount.R
 import com.noox.wordscount.databinding.ActivityMainBinding
-import com.noox.wordscount.words.ui.WordsViewModel.SortType.*
+import com.noox.wordscount.words.ui.WordsList.SortType
 import initBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +38,7 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
         viewModel.words.observe(this, Observer { render(it) })
     }
 
-    private fun render(words: Words) {
+    private fun render(words: WordsList) {
         if (adapter == null) {
             adapter = WordsAdapter((words))
             binding.recyclerView.adapter = adapter
@@ -55,15 +54,15 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_sort_alphabetical -> {
-            viewModel.sortBy(Alphabetical)
+            viewModel.sortBy(SortType.Alphabetical)
             true
         }
         R.id.menu_sort_position -> {
-            viewModel.sortBy(Position)
+            viewModel.sortBy(SortType.Position)
             true
         }
         R.id.menu_sort_appearances -> {
-            viewModel.sortBy(Appearance)
+            viewModel.sortBy(SortType.Appearance)
             true
         }
         R.id.menu_file -> {
@@ -113,12 +112,12 @@ class WordsActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Disp
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode != RC_FILE || resultCode != RESULT_OK) {
-            return
-        }
+        super.onActivityResult(requestCode, resultCode, data)
 
-        data?.data?.let {
-            viewModel.loadWordsFrom(it)
+        if (requestCode == RC_FILE && resultCode == RESULT_OK) {
+            data?.data?.let {
+                viewModel.loadWordsFrom(it)
+            }
         }
     }
 

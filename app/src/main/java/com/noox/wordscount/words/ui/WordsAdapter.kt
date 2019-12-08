@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.noox.wordscount.databinding.ItemListBinding
-import com.noox.wordscount.words.ui.Words.ActionType
+import com.noox.wordscount.words.ui.WordsList.ActionType
 
-class WordsAdapter(val words: Words) : RecyclerView.Adapter<WordViewHolder>() {
+class WordsAdapter(val words: WordsList) : RecyclerView.Adapter<WordViewHolder>() {
 
     private var items = words.items
 
@@ -21,7 +21,7 @@ class WordsAdapter(val words: Words) : RecyclerView.Adapter<WordViewHolder>() {
 
     override fun getItemCount() = items.size
 
-    fun update(words: Words) {
+    fun update(words: WordsList) {
         items = words.items
         when (val action = words.lastAction) {
             is ActionType.Add ->  notifyItemInserted(action.word.position)

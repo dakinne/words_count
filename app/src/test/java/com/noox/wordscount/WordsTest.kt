@@ -1,7 +1,7 @@
 package com.noox.wordscount
 
-import com.noox.wordscount.words.ui.Words
-import com.noox.wordscount.words.ui.Words.SortType.*
+import com.noox.wordscount.words.ui.WordsList
+import com.noox.wordscount.words.ui.WordsList.SortType.*
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -15,14 +15,14 @@ class WordsTest {
 
     @Test
     fun words_addOneWord() {
-        val words = Words()
+        val words = WordsList()
         words.add("noox")
         assertEquals(words.items.size, 1)
     }
 
     @Test
     fun words_addWordTwice() {
-        val words = Words()
+        val words = WordsList()
         words.add("noox")
         words.add("noox")
         assertEquals(1, words.items.size)
@@ -32,7 +32,7 @@ class WordsTest {
 
     @Test
     fun words_addTwoDiferentsWords() {
-        val words = Words()
+        val words = WordsList()
         words.add("noox")
         words.add("dyss")
         assertEquals(2, words.items.size)
@@ -44,7 +44,7 @@ class WordsTest {
 
     @Test
     fun words_sortByAlphabetical() {
-        val words = Words()
+        val words = WordsList()
         words.add("bb")
         words.add("cc")
         words.add("bb")
@@ -59,7 +59,7 @@ class WordsTest {
 
     @Test
     fun words_sortByPosition() {
-        val words = Words()
+        val words = WordsList()
         words.add("bb")
         words.add("cc")
         words.add("bb")
@@ -74,7 +74,7 @@ class WordsTest {
 
     @Test
     fun words_sortByAppearance() {
-        val words = Words()
+        val words = WordsList()
         words.add("bb")
         words.add("cc")
         words.add("bb")

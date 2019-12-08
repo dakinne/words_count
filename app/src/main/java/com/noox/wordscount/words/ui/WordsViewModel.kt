@@ -8,26 +8,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.noox.wordscount.common.Result
 import com.noox.wordscount.words.domain.usecase.LoadWords
-import com.noox.wordscount.words.domain.model.Word
-import com.noox.wordscount.words.ui.Words.ActionType
+import com.noox.wordscount.words.ui.WordsList.SortType
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.*
 
 class WordsViewModel(
     private val loadWords: LoadWords
 ) : ViewModel() {
 
-    enum class SortType { Alphabetical, Position, Appearance }
+    private val wordsList = WordsList()
 
-    private val wordsList = mutableListOf<Word>()
-    private val wordsMap = mutableMapOf<String, Word>()
-
-    val words: LiveData<Words> get() = _words
-    private val _words = MutableLiveData<Words>(Words(wordsList))
+    val words: LiveData<WordsList> get() = _words
+    private val _words = MutableLiveData<WordsList>(wordsList)
 
     fun loadWordsFrom(uri: Uri) {
-        emptyWords()
+        clear()
         viewModelScope.launch {
             loadWords(uri).collect { result ->
                 when (result) {
@@ -38,42 +33,18 @@ class WordsViewModel(
         }
     }
 
-    fun sortBy(sortType: SortType) {
-        when (sortType) {
-            SortType.Alphabetical -> wordsList.sortBy { it.text }
-            SortType.Position -> wordsList.sortBy { it.position }
-            SortType.Appearance -> wordsList.sortByDescending { it.timesItAppears }
-        }
-        _words.value = Words(wordsList, ActionType.Sort)
-    }
-
-    private fun emptyWords() {
-        wordsList.clear()
-        wordsMap.clear()
-        _words.value = Words(wordsList, ActionType.Clear)
-    }
-
     private fun add(text: String) {
-        val lowerCaseText = text.toLowerCase(Locale.ROOT)
-        val word = wordsMap[lowerCaseText]
-
-        if (word == null) {
-            addNewWord(text, lowerCaseText)
-        } else {
-            updateWord(word)
-        }
+        wordsList.add(text)
+        _words.value = wordsList
     }
 
-    private fun addNewWord(text: String, lowerCaseText: String) {
-        val word =
-            Word(text, wordsList.size)
-        wordsList.add(word)
-        wordsMap[lowerCaseText] = word
-        _words.value = Words(wordsList, ActionType.Add(word))
+    private fun clear() {
+        wordsList.clear()
+        _words.value = wordsList
     }
 
-    private fun updateWord(word: Word) {
-        word.increaseTimesItAppears()
-        _words.value = Words(wordsList, ActionType.Update(word))
+    fun sortBy(sortType: SortType) {
+        wordsList.sortBy(sortType)
+        _words.value = wordsList
     }
 }
